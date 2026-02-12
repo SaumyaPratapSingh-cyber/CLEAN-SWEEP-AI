@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CleanSweep</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- LeafletJS for Maps -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+    <!-- Custom Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="flex flex-col min-h-screen items-center justify-center text-white p-3 sm:p-6">
+
+    <!-- Header -->
+    <header class="fixed top-0 left-0 w-full p-4 sm:p-6 flex items-center justify-between z-50 glass shadow-lg">
+        <a href="#" class="text-white flex items-center space-x-3 group">
+            <div class="p-2 rounded-full bg-emerald-500/20 group-hover:bg-emerald-500/30 transition">
+                <i data-lucide="recycle" class="w-8 h-8 text-emerald-400"></i>
+            </div>
+            <span
+                class="text-2xl sm:text-3xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 to-cyan-400">CleanSweep</span>
+        </a>
+        <div class="flex items-center space-x-2 relative" id="header-auth-area">
+            <!-- Hamburger for mobile -->
+            <button id="hamburger-btn"
+                class="sm:hidden flex items-center justify-center w-10 h-10 rounded-full bg-slate-700/50 hover:bg-slate-600/50 focus:outline-none border border-slate-600 backdrop-blur-sm transition">
+                <i data-lucide="menu" class="w-6 h-6 text-white"></i>
+            </button>
+            <div id="mobile-menu"
+                class="fixed top-0 left-0 w-full h-full bg-black/80 backdrop-blur-md z-[4000] flex items-center justify-center hidden animate-fade-in">
+                <div
+                    class="bg-slate-900/90 border border-slate-700 rounded-3xl shadow-2xl p-8 flex flex-col gap-6 w-11/12 max-w-sm mx-auto relative">
+                    <button id="close-mobile-menu"
+                        class="absolute top-4 right-4 text-slate-400 hover:text-white transition">
+                        <i data-lucide="x" class="w-8 h-8"></i>
+                    </button>
+                    <div class="text-center mb-4">
+                        <span class="text-2xl font-bold text-emerald-400">Menu</span>
+                    </div>
+                    <button id="view-marketplace-btn-mobile"
+                        class="bg-white/5 hover:bg-white/10 border border-white/10 text-white font-semibold py-4 px-6 rounded-2xl flex items-center space-x-4 transition transform hover:scale-[1.02]">
+                        <div class="p-2 bg-blue-500/20 rounded-xl">
+                            <i data-lucide="store" class="w-6 h-6 text-blue-400"></i>
+                        </div>
+                        <span class="text-lg">Marketplace</span>
+                    </button>
+                    <button id="view-map-btn-mobile"
+                        class="bg-white/5 hover:bg-white/10 border border-white/10 text-white font-semibold py-4 px-6 rounded-2xl flex items-center space-x-4 transition transform hover:scale-[1.02]">
+                        <div class="p-2 bg-purple-500/20 rounded-xl">
+                            <i data-lucide="map" class="w-6 h-6 text-purple-400"></i>
+                        </div>
+                        <span class="text-lg">Map</span>
+                    </button>
+                    <button id="view-report-btn-mobile"
+                        class="bg-white/5 hover:bg-white/10 border border-white/10 text-white font-semibold py-4 px-6 rounded-2xl flex items-center space-x-4 transition transform hover:scale-[1.02]">
+                        <div class="p-2 bg-orange-500/20 rounded-xl">
+                            <i data-lucide="bell" class="w-6 h-6 text-orange-400"></i>
+                        </div>
+                        <span class="text-lg">Your Reports</span>
+                    </button>
+                    <button id="profile-btn-mobile"
+                        class="bg-white/5 hover:bg-white/10 border border-white/10 text-white font-semibold py-4 px-6 rounded-2xl flex items-center space-x-4 transition transform hover:scale-[1.02]">
+                        <div class="p-2 bg-slate-500/20 rounded-xl">
+                            <i data-lucide="user" class="w-6 h-6 text-slate-400"></i>
+                        </div>
+                        <span class="text-lg">Profile</span>
+                    </button>
+                </div>
+            </div>
+            <!-- Desktop buttons -->
+            <div class="hidden sm:flex items-center space-x-3">
+                <button id="view-marketplace-btn"
+                    class="bg-slate-800/50 hover:bg-slate-700/50 hover:text-blue-400 text-slate-200 font-medium py-2 px-5 rounded-full flex items-center space-x-2 transition border border-slate-700/50 backdrop-blur-sm">
+                    <i data-lucide="store" class="w-5 h-5"></i>
+                    <span>Marketplace</span>
+                </button>
+                <button id="view-map-btn"
+                    class="bg-slate-800/50 hover:bg-slate-700/50 hover:text-purple-400 text-slate-200 font-medium py-2 px-5 rounded-full flex items-center space-x-2 transition border border-slate-700/50 backdrop-blur-sm">
+                    <i data-lucide="map" class="w-5 h-5"></i>
+                    <span>Map</span>
+                </button>
+                <button id="view-report-btn"
+                    class="bg-slate-800/50 hover:bg-slate-700/50 hover:text-orange-400 text-slate-200 font-medium py-2 px-5 rounded-full flex items-center space-x-2 transition border border-slate-700/50 backdrop-blur-sm">
+                    <i data-lucide="bell" class="w-5 h-5"></i>
+                    <span>Reports</span>
+                </button>
+                <div class="relative group">
+                    <button id="profile-btn"
+                        class="ml-2 flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-br from-slate-700 to-slate-800 hover:from-slate-600 hover:to-slate-700 focus:outline-none border border-slate-600 shadow-md transition">
+                        <i data-lucide="user" class="w-5 h-5 text-gray-200"></i>
+                    </button>
+                    <div id="profile-dropdown"
+                        class="hidden absolute right-0 mt-3 w-48 bg-slate-800 border border-slate-700 rounded-xl shadow-xl z-50 py-2 animate-fade-in origin-top-right ring-1 ring-black ring-opacity-5">
+                        <div class="px-4 py-3 border-b border-slate-700">
+                            <p class="text-slate-400 text-xs uppercase font-semibold tracking-wider">Signed in as</p>
+                            <p class="text-white text-sm truncate font-medium" id="auth-user-email"></p>
+                        </div>
+                        <button id="edit-profile-btn"
+                            class="w-full text-left px-4 py-3 hover:bg-slate-700 text-gray-200 text-sm flex items-center gap-2 transition">
+                            <i data-lucide="settings" class="w-4 h-4"></i> Edit Profile
+                        </button>
+                        <button id="logout-btn"
+                            class="w-full text-left px-4 py-3 hover:bg-slate-700 text-red-400 text-sm flex items-center gap-2 transition rounded-b-xl">
+                            <i data-lucide="log-out" class="w-4 h-4"></i> Logout
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.42.5/dist/umd/supabase.min.js"></script>
+    <script src="supabaseClient.js"></script>
+    <script>
+        // Hamburger menu logic and profile/modal logic
+        document.addEventListener('DOMContentLoaded', function () {
+            // Hamburger menu
+            const hamburgerBtn = document.getElementById('hamburger-btn');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const closeMobileMenu = document.getElementById('close-mobile-menu');
+            hamburgerBtn?.addEventListener('click', () => {
+                mobileMenu.classList.remove('hidden');
+            });
+            closeMobileMenu?.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+            });
+            mobileMenu?.addEventListener('click', (e) => {
+                if (e.target === mobileMenu) mobileMenu.classList.add('hidden');
+            });
+            // Forward mobile menu button clicks to desktop logic
+            document.getElementById('view-marketplace-btn-mobile')?.addEventListener('click', () => {
+                document.getElementById('view-marketplace-btn')?.click();
+                mobileMenu.classList.add('hidden');
+            });
+            document.getElementById('view-map-btn-mobile')?.addEventListener('click', () => {
+                document.getElementById('view-map-btn')?.click();
+                mobileMenu.classList.add('hidden');
+            });
+            document.getElementById('view-report-btn-mobile')?.addEventListener('click', () => {
+                document.getElementById('view-report-btn')?.click();
+                mobileMenu.classList.add('hidden');
+            });
+            document.getElementById('profile-btn-mobile')?.addEventListener('click', () => {
+                document.getElementById('profile-btn')?.click();
+                mobileMenu.classList.add('hidden');
+            });
+
+            // Profile dropdown logic
+            const profileBtn = document.getElementById('profile-btn');
+            const profileDropdown = document.getElementById('profile-dropdown');
+            if (profileBtn && profileDropdown) {
+                profileBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    profileDropdown.classList.toggle('hidden');
+                });
+                document.addEventListener('click', (e) => {
+                    if (!profileDropdown.classList.contains('hidden')) {
+                        profileDropdown.classList.add('hidden');
+                    }
+                });
+                profileDropdown.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                });
+            }
+
+            // Logout button in dropdown
+            const logoutBtn = document.getElementById('logout-btn');
+            if (logoutBtn) {
+                logoutBtn.onclick = async () => {
+                    await window.supabaseClient.auth.signOut();
+                    window.location.href = 'login.html';
+                };
+            }
+
+            // Edit profile button (placeholder)
+            // Edit Profile modal logic
+            const editProfileBtn = document.getElementById('edit-profile-btn');
+            const modal = document.getElementById('edit-profile-modal');
+            const closeBtn = document.getElementById('close-edit-profile');
+            const form = document.getElementById('edit-profile-form');
+            const nameInput = document.getElementById('profile-name');
+            const phoneInput = document.getElementById('profile-phone');
+            const emailInput = document.getElementById('profile-email');
+            const statusDiv = document.getElementById('edit-profile-status');
+            let userId = null;
+            if (editProfileBtn && modal && closeBtn && form) {
+                editProfileBtn.onclick = null;
+                editProfileBtn.addEventListener('click', async (e) => {
+                    e.preventDefault();
+                    if (!window.supabaseClient) return;
+                    const { data: { session } } = await window.supabaseClient.auth.getSession();
+                    if (!session || !session.user) return;
+                    userId = session.user.id;
+                    nameInput.value = '';
+                    phoneInput.value = '';
+                    emailInput.value = session.user.email;
+                    statusDiv.textContent = 'Loading...';
+                    modal.classList.remove('hidden');
+                    const { data, error } = await window.supabaseClient
+                        .from('profiles')
+                        .select('*')
+                        .eq('id', userId)
+                        .single();
+                    if (data) {
+                        nameInput.value = data.name || '';
+                        phoneInput.value = data.phone || '';
+                        emailInput.value = data.email || session.user.email;
+                    }
+                    statusDiv.textContent = '';
+                });
+                closeBtn.addEventListener('click', () => {
+                    modal.classList.add('hidden');
+                });
+                form.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    if (!window.supabaseClient || !userId) return;
+                    statusDiv.textContent = 'Saving...';
+                    const updates = {
+                        id: userId,
+                        name: nameInput.value,
+                        phone: phoneInput.value,
+                        email: emailInput.value
+                    };
+                    const { error } = await window.supabaseClient
+                        .from('profiles')
+                        .upsert(updates, { onConflict: ['id'] });
+                    if (error) {
+                        statusDiv.textContent = 'Failed to save changes.';
+                    } else {
+                        statusDiv.textContent = 'Profile updated!';
+                        setTimeout(() => { modal.classList.add('hidden'); }, 1200);
+                    }
+                });
+            }
+        });
+    </script>
+
+    <!-- Main Camera UI -->
+    <main id="main-content"
+        class="w-full max-w-2xl flex flex-col items-center px-4 pt-24 pb-8 flex-grow justify-center">
+
+        <div id="camera-ui" class="w-full flex flex-col items-center space-y-8 animate-fade-in">
+            <div class="text-center space-y-2">
+                <h1 class="text-3xl font-bold tracking-tight text-white">Report Illegal Dumping</h1>
+                <p class="text-slate-400 text-lg max-w-md mx-auto">Help keep our city clean. Capture a photo and we'll
+                    handle the rest.</p>
+            </div>
+
+            <div
+                class="camera-container w-full aspect-square sm:aspect-video flex items-center justify-center bg-black/40 backdrop-blur-sm relative group">
+                <video id="camera-feed" autoplay playsinline class="hidden w-full h-full object-cover"></video>
+                <div id="placeholder"
+                    class="text-center text-slate-500 flex flex-col items-center transition-all duration-300 group-hover:text-slate-400">
+                    <div class="p-6 rounded-full bg-slate-800/50 mb-4 border border-slate-700/50">
+                        <i data-lucide="camera-off" class="w-12 h-12"></i>
+                    </div>
+                    <p class="text-lg font-medium">Camera is off</p>
+                    <p class="text-sm opacity-75">Click "Start Camera" to begin</p>
+                </div>
+                <!-- Shutter Flash Effect -->
+                <div id="shutter-flash"
+                    class="absolute inset-0 bg-white pointer-events-none opacity-0 transition-opacity duration-100 z-20">
+                </div>
+            </div>
+
+            <div class="flex items-center space-x-6">
+                <button id="start-camera-btn"
+                    class="bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white font-bold py-3 px-8 rounded-full flex items-center space-x-3 transition shadow-lg hover:shadow-blue-500/25 transform hover:-translate-y-0.5">
+                    <i data-lucide="video" class="w-5 h-5"></i>
+                    <span>Start Camera</span>
+                </button>
+                <button id="capture-btn"
+                    class="capture-button bg-red-500 hover:bg-red-600 text-white w-20 h-20 rounded-full flex items-center justify-center shadow-2xl disabled:bg-gray-700 disabled:cursor-not-allowed disabled:shadow-none transition-all duration-300"
+                    disabled>
+                    <i data-lucide="camera" class="w-8 h-8"></i>
+                </button>
+                <button id="retake-btn"
+                    class="bg-slate-700 hover:bg-slate-600 text-white font-bold py-3 px-8 rounded-full flex items-center space-x-3 transition hidden">
+                    <i data-lucide="rotate-cw" class="w-5 h-5"></i>
+                    <span>Retake</span>
+                </button>
+            </div>
+        </div>
+
+        <div id="submission-ui" class="w-full hidden flex-col items-center space-y-6 animate-fade-in">
+            <div class="text-center space-y-1">
+                <h1 class="text-2xl font-bold text-white">Confirm Report</h1>
+                <p class="text-slate-400">Review your capture and location</p>
+            </div>
+
+            <div
+                class="w-full aspect-video rounded-2xl overflow-hidden bg-slate-900 border border-slate-700 shadow-xl relative">
+                <img id="photo-preview" src="" alt="Captured photo preview" class="w-full h-full object-cover">
+                <div class="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black/80 to-transparent p-4">
+                    <p class="text-white text-xs font-mono opacity-80 flex items-center gap-2">
+                        <i data-lucide="camera" class="w-3 h-3"></i> Captured just now
+                    </p>
+                </div>
+            </div>
+
+            <div id="map-preview" class="w-full bg-slate-800 border-2 border-slate-700/50 shadow-inner"></div>
+
+            <div class="flex items-center w-full max-w-md gap-4">
+                <button id="submit-report-btn"
+                    class="flex-1 bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-400 text-white font-bold py-4 px-6 rounded-xl flex items-center justify-center space-x-2 transition shadow-lg hover:shadow-emerald-500/25 transform hover:-translate-y-0.5">
+                    <i data-lucide="send" class="w-5 h-5"></i>
+                    <span>Submit Report</span>
+                </button>
+            </div>
+        </div>
+
+        <div id="verification-ui"
+            class="w-full hidden flex-col items-center justify-center space-y-6 flex-grow animate-fade-in">
+            <div class="relative">
+                <div class="spinner w-16 h-16 border-4 border-slate-700 border-t-emerald-500 rounded-full animate-spin">
+                </div>
+                <div class="absolute inset-0 flex items-center justify-center">
+                    <i data-lucide="loader-2" class="w-8 h-8 text-emerald-500 animate-pulse"></i>
+                </div>
+            </div>
+            <div class="text-center space-y-2">
+                <p class="text-xl font-semibold text-white">Analyzing Image...</p>
+                <p class="text-slate-400 text-sm">Verifying content and fetching location data.</p>
+            </div>
+        </div>
+
+        <canvas id="photo-canvas" class="hidden"></canvas>
+    </main>
+
+    <!-- Full Screen Map View -->
+    <div id="map-view" class="hidden fixed inset-0 z-[2000] bg-slate-900 animate-fade-in">
+        <div id="full-map" class="w-full h-full"></div>
+
+        <!-- Map Controls -->
+        <div class="absolute top-6 right-6 z-[1000] flex flex-col gap-3">
+            <button id="back-to-camera-btn"
+                class="bg-slate-800/90 hover:bg-slate-700/90 text-white font-bold p-3 rounded-full shadow-lg border border-slate-700 backdrop-blur-sm transition transform hover:scale-105">
+                <i data-lucide="x" class="w-6 h-6"></i>
+            </button>
+        </div>
+
+        <div class="absolute top-6 left-6 z-[1000]">
+            <button id="refresh-map-btn"
+                class="bg-blue-600/90 hover:bg-blue-500/90 text-white font-bold py-3 px-6 rounded-full shadow-lg flex items-center space-x-2 backdrop-blur-sm transition transform hover:scale-105">
+                <i data-lucide="refresh-cw" class="w-5 h-5"></i>
+                <span>Refresh Area</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Collector Marketplace View -->
+    <div id="marketplace-view"
+        class="hidden fixed inset-0 z-[2000] bg-slate-900/95 backdrop-blur-md overflow-y-auto animate-fade-in p-4 sm:p-8">
+        <div class="max-w-6xl mx-auto pt-20">
+            <div class="flex justify-between items-center mb-8">
+                <div>
+                    <h1
+                        class="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">
+                        Marketplace</h1>
+                    <p class="text-slate-400 mt-2 text-lg">Connect with local collectors to recycle your waste.</p>
+                </div>
+                <button id="back-to-camera-from-market-btn"
+                    class="bg-slate-800/80 hover:bg-slate-700 text-white font-bold p-3 rounded-full transition border border-slate-700 hover:rotate-90">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+
+            <!-- Filters / Search (Placeholder for visual appeal) -->
+            <div class="flex gap-4 mb-8 overflow-x-auto pb-2">
+                <button
+                    class="px-5 py-2 rounded-full bg-blue-600 text-white font-medium text-sm whitespace-nowrap shadow-lg shadow-blue-500/20">All
+                    Collectors</button>
+                <button
+                    class="px-5 py-2 rounded-full bg-slate-800 border border-slate-700 text-slate-300 hover:text-white hover:border-slate-500 transition font-medium text-sm whitespace-nowrap">Plastic</button>
+                <button
+                    class="px-5 py-2 rounded-full bg-slate-800 border border-slate-700 text-slate-300 hover:text-white hover:border-slate-500 transition font-medium text-sm whitespace-nowrap">E-Waste</button>
+                <button
+                    class="px-5 py-2 rounded-full bg-slate-800 border border-slate-700 text-slate-300 hover:text-white hover:border-slate-500 transition font-medium text-sm whitespace-nowrap">Metal</button>
+            </div>
+
+            <div id="collector-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Collector cards will be inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <div id="supabase-warn"
+        class="hidden fixed top-0 left-1/2 -translate-x-1/2 mt-4 bg-red-600 text-white text-sm px-4 py-2 rounded shadow z-[2000]">
+        Supabase not loaded; reports will NOT persist remotely.
+    </div>
+    <footer class="absolute bottom-0 w-full p-2 sm:p-4 text-center text-gray-500 text-sm z-10">
+
+        <!-- Footer removed as per request: Back to App · Dashboard buttons -->
+        <!-- Edit Profile Modal -->
+        <div id="edit-profile-modal" class="fixed inset-0 bg-black/60 z-[3000] flex items-center justify-center hidden">
+            <form id="edit-profile-form"
+                class="bg-slate-900 rounded-xl shadow-2xl max-w-md w-full p-8 relative flex flex-col gap-4">
+                <button type="button" id="close-edit-profile"
+                    class="absolute top-3 right-3 text-slate-400 hover:text-white text-2xl">&times;</button>
+                <h2 class="text-xl font-bold mb-2 text-center">Edit Profile</h2>
+                <label class="text-sm">Name
+                    <input id="profile-name" name="name" type="text"
+                        class="w-full mt-1 px-3 py-2 rounded bg-slate-800 text-white border border-slate-700"
+                        required />
+                </label>
+                <label class="text-sm">Phone Number
+                    <input id="profile-phone" name="phone" type="tel"
+                        class="w-full mt-1 px-3 py-2 rounded bg-slate-800 text-white border border-slate-700"
+                        required />
+                </label>
+                <label class="text-sm">Email
+                    <input id="profile-email" name="email" type="email"
+                        class="w-full mt-1 px-3 py-2 rounded bg-slate-800 text-white border border-slate-700"
+                        required />
+                </label>
+                <button type="submit"
+                    class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-6 rounded-full mt-2">Save
+                    Changes</button>
+                <div id="edit-profile-status" class="text-center text-xs mt-2"></div>
+            </form>
+        </div>
+        <!-- Modal for user reports -->
+        <!-- Notification Drawer for user reports -->
+        <div id="user-reports-drawer"
+            class="fixed top-0 right-0 h-full w-[380px] max-w-full bg-slate-900 shadow-2xl z-[2000] border-l border-slate-800 transform translate-x-full transition-transform duration-300 ease-in-out flex flex-col">
+            <div class="flex items-center justify-between px-6 py-4 border-b border-slate-800">
+                <h2 class="text-lg font-bold">Your Reports</h2>
+                <button id="close-reports-drawer" class="text-slate-400 hover:text-white text-2xl">&times;</button>
+            </div>
+            <div id="user-reports-list" class="flex-1 overflow-y-auto p-6 space-y-4 text-sm"></div>
+        </div>
+        &copy; 2025 CleanSweep. All rights reserved.
+    </footer>
+    <!-- Supabase (must load before script.js) -->
+    <!-- Removed duplicate supabaseClient.js include -->
+    <script>
+        (async function () {
+            if (!window.supabaseClient) return;
+            const { data: { session } } = await window.supabaseClient.auth.getSession();
+            const link = document.getElementById('login-link');
+            if (session && link) {
+                link.href = 'admin.html';
+                link.querySelector('span').textContent = 'Dashboard';
+            }
+        })();
+    </script>
+    <script src="script.js"></script>
+    <script>
+        // Show user reports modal and fetch user's reports from Supabase
+        document.addEventListener('DOMContentLoaded', function () {
+            const btn = document.getElementById('view-report-btn');
+            const drawer = document.getElementById('user-reports-drawer');
+            const closeBtn = document.getElementById('close-reports-drawer');
+            const reportsList = document.getElementById('user-reports-list');
+            let userEmail = null;
+            if (window.supabaseClient) {
+                window.supabaseClient.auth.getSession().then(({ data: { session } }) => {
+                    if (session && session.user) {
+                        userEmail = session.user.email;
+                    }
+                });
+            }
+            if (btn && drawer && closeBtn && reportsList) {
+                btn.addEventListener('click', async () => {
+                    drawer.classList.remove('translate-x-full');
+                    reportsList.innerHTML = '<div class="text-center text-slate-400 animate-pulse">Loading...</div>';
+                    if (!window.supabaseClient) {
+                        reportsList.innerHTML = '<div class="text-red-500">Supabase not loaded.</div>';
+                        return;
+                    }
+                    // Get user session/email
+                    const { data: { session } } = await window.supabaseClient.auth.getSession();
+                    if (!session || !session.user) {
+                        reportsList.innerHTML = '<div class="text-slate-400 text-center">No reports found.</div>';
+                        return;
+                    }
+                    userEmail = session.user.email;
+                    // Fetch reports for this user
+                    try {
+                        const { data, error } = await window.supabaseClient
+                            .from('reports')
+                            .select('*')
+                            .eq('user_email', userEmail)
+                            .order('timestamp', { ascending: false });
+                        if (error) {
+                            reportsList.innerHTML = '<div class="text-red-500">Failed to load reports.</div>';
+                            return;
+                        }
+                        if (!data || data.length === 0) {
+                            reportsList.innerHTML = '<div class="text-slate-400 text-center">No reports found.</div>';
+                            return;
+                        }
+                        reportsList.innerHTML = data.map(r => `
+                        <div class="bg-slate-800 rounded-lg p-4 flex flex-col gap-2 border border-slate-700">
+                            <div class="flex items-center gap-2">
+                                <span class="font-semibold">Status:</span>
+                                <span class="px-2 py-0.5 rounded text-xs font-bold ${r.status === 'pending' ? 'bg-yellow-500/20 text-yellow-400' : r.status === 'cleared' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-slate-700 text-slate-300'}">${r.status || 'pending'}</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="font-semibold">Location:</span>
+                                <span>${r.latitude && r.longitude ? `${r.latitude.toFixed(4)}, ${r.longitude.toFixed(4)}` : 'N/A'}</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="font-semibold">Date:</span>
+                                <span>${r.timestamp ? new Date(r.timestamp).toLocaleString() : 'N/A'}</span>
+                            </div>
+                            ${r.image_url ? `<img src="${r.image_url}" alt="Report Image" class="w-32 h-20 object-cover rounded border border-slate-700 mt-2">` : ''}
+                        </div>
+                    `).join('');
+                    } catch (err) {
+                        reportsList.innerHTML = '<div class="text-red-500">Failed to load reports.</div>';
+                    }
+                });
+                closeBtn.addEventListener('click', () => {
+                    drawer.classList.add('translate-x-full');
+                });
+            }
+        });
+    </script>
+</body>
+
+</html>
