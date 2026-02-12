@@ -27,6 +27,10 @@
 
 <body class="flex flex-col min-h-screen items-center justify-center text-white p-3 sm:p-6">
 
+    <!-- Background Effects -->
+    <div class="mesh-bg"></div>
+    <div class="scanlines"></div>
+
     <!-- Header -->
     <header class="fixed top-0 left-0 w-full p-4 sm:p-6 flex items-center justify-between z-50 glass shadow-lg">
         <a href="#" class="text-white flex items-center space-x-3 group">
@@ -252,25 +256,68 @@
 
     <!-- Main Camera UI -->
     <main id="main-content"
-        class="w-full max-w-2xl flex flex-col items-center px-4 pt-24 pb-8 flex-grow justify-center">
+        class="w-full max-w-5xl flex flex-col items-center px-4 pt-28 pb-12 flex-grow justify-center relative z-10">
+        <!-- Increased max-w and pt -->
 
-        <div id="camera-ui" class="w-full flex flex-col items-center space-y-8 animate-fade-in">
-            <div class="text-center space-y-2">
-                <h1 class="text-3xl font-bold tracking-tight text-white">Report Illegal Dumping</h1>
-                <p class="text-slate-400 text-lg max-w-md mx-auto">Help keep our city clean. Capture a photo and we'll
-                    handle the rest.</p>
+        <div id="camera-ui" class="w-full flex flex-col items-center space-y-12 animate-fade-in">
+            <div class="text-center space-y-4">
+                <h1
+                    class="text-5xl md:text-6xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-emerald-300 via-cyan-300 to-emerald-300 animate-gradient-x pb-2">
+                    Clean Your City
+                </h1>
+                <p class="text-slate-300 text-xl max-w-2xl mx-auto font-light leading-relaxed">
+                    Join the movement. <span class="text-emerald-400 font-semibold">Spot it. Snap it. Report it.</span>
+                    <br>Earn rewards and help build a sustainable future.
+                </p>
+            </div>
+
+            <!-- How It Works Stepper -->
+            <div class="w-full grid grid-cols-1 md:grid-cols-3 gap-6 opacity-0 animate-fade-in"
+                style="animation-delay: 0.2s; animation-fill-mode: forwards;">
+                <div
+                    class="glass p-6 rounded-2xl flex flex-col items-center text-center space-y-3 transform transition hover:scale-105 hover:bg-slate-800/50 group">
+                    <div
+                        class="w-16 h-16 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400 mb-2 group-hover:scale-110 transition">
+                        <i data-lucide="camera" class="w-8 h-8"></i>
+                    </div>
+                    <h3 class="font-bold text-xl text-white">1. Capture</h3>
+                    <p class="text-sm text-slate-400">Take a clear photo of the illegal dumping or waste.</p>
+                </div>
+                <div
+                    class="glass p-6 rounded-2xl flex flex-col items-center text-center space-y-3 transform transition hover:scale-105 hover:bg-slate-800/50 group">
+                    <div
+                        class="w-16 h-16 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-400 mb-2 group-hover:scale-110 transition">
+                        <i data-lucide="map-pin" class="w-8 h-8"></i>
+                    </div>
+                    <h3 class="font-bold text-xl text-white">2. Locate</h3>
+                    <p class="text-sm text-slate-400">We automatically tag the GPS location for you.</p>
+                </div>
+                <div
+                    class="glass p-6 rounded-2xl flex flex-col items-center text-center space-y-3 transform transition hover:scale-105 hover:bg-slate-800/50 group">
+                    <div
+                        class="w-16 h-16 rounded-full bg-purple-500/20 flex items-center justify-center text-purple-400 mb-2 group-hover:scale-110 transition">
+                        <i data-lucide="check-circle" class="w-8 h-8"></i>
+                    </div>
+                    <h3 class="font-bold text-xl text-white">3. Resolve</h3>
+                    <p class="text-sm text-slate-400">Authorities are notified and you earn points.</p>
+                </div>
             </div>
 
             <div
-                class="camera-container w-full aspect-square sm:aspect-video flex items-center justify-center bg-black/40 backdrop-blur-sm relative group">
-                <video id="camera-feed" autoplay playsinline class="hidden w-full h-full object-cover"></video>
+                class="camera-container w-full max-w-2xl aspect-square sm:aspect-video flex items-center justify-center bg-black/60 backdrop-blur-xl relative group border border-slate-700/50 shadow-2xl overflow-hidden rounded-3xl">
+                <video id="camera-feed" autoplay playsinline
+                    class="hidden w-full h-full object-cover transform scale-100 group-hover:scale-105 transition duration-700"></video>
                 <div id="placeholder"
-                    class="text-center text-slate-500 flex flex-col items-center transition-all duration-300 group-hover:text-slate-400">
-                    <div class="p-6 rounded-full bg-slate-800/50 mb-4 border border-slate-700/50">
-                        <i data-lucide="camera-off" class="w-12 h-12"></i>
+                    class="text-center text-slate-500 flex flex-col items-center transition-all duration-300 group-hover:text-emerald-400">
+                    <div
+                        class="p-8 rounded-full bg-slate-800/80 mb-6 border border-slate-600/50 shadow-inner group-hover:bg-slate-800 group-hover:border-emerald-500/50 transition duration-300 relative">
+                        <div
+                            class="absolute inset-0 rounded-full bg-emerald-500/20 blur-xl opacity-0 group-hover:opacity-100 transition duration-500">
+                        </div>
+                        <i data-lucide="camera" class="w-16 h-16 relative z-10"></i>
                     </div>
-                    <p class="text-lg font-medium">Camera is off</p>
-                    <p class="text-sm opacity-75">Click "Start Camera" to begin</p>
+                    <p class="text-2xl font-bold text-white mb-2">Ready to Clean?</p>
+                    <p class="text-base text-slate-400">Tap "Start Camera" to begin scanning</p>
                 </div>
                 <!-- Shutter Flash Effect -->
                 <div id="shutter-flash"
@@ -278,20 +325,20 @@
                 </div>
             </div>
 
-            <div class="flex items-center space-x-6">
+            <div class="flex items-center space-x-6 pb-8">
                 <button id="start-camera-btn"
-                    class="bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white font-bold py-3 px-8 rounded-full flex items-center space-x-3 transition shadow-lg hover:shadow-blue-500/25 transform hover:-translate-y-0.5">
-                    <i data-lucide="video" class="w-5 h-5"></i>
-                    <span>Start Camera</span>
+                    class="glow-effect bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-white font-bold py-4 px-10 rounded-full flex items-center space-x-3 transition transform hover:-translate-y-1 shadow-xl shadow-emerald-500/20 text-lg">
+                    <i data-lucide="scan-line" class="w-6 h-6"></i>
+                    <span>Start Scanner</span>
                 </button>
                 <button id="capture-btn"
-                    class="capture-button bg-red-500 hover:bg-red-600 text-white w-20 h-20 rounded-full flex items-center justify-center shadow-2xl disabled:bg-gray-700 disabled:cursor-not-allowed disabled:shadow-none transition-all duration-300"
+                    class="capture-button bg-white text-emerald-600 w-24 h-24 rounded-full flex items-center justify-center shadow-2xl disabled:bg-slate-700 disabled:text-slate-500 disabled:cursor-not-allowed disabled:shadow-none transition-all duration-300 border-4 border-transparent hover:border-emerald-200"
                     disabled>
-                    <i data-lucide="camera" class="w-8 h-8"></i>
+                    <i data-lucide="aperture" class="w-10 h-10"></i>
                 </button>
                 <button id="retake-btn"
-                    class="bg-slate-700 hover:bg-slate-600 text-white font-bold py-3 px-8 rounded-full flex items-center space-x-3 transition hidden">
-                    <i data-lucide="rotate-cw" class="w-5 h-5"></i>
+                    class="bg-slate-800/80 hover:bg-slate-700/80 text-white font-bold py-4 px-10 rounded-full flex items-center space-x-3 transition hidden backdrop-blur-md border border-slate-600">
+                    <i data-lucide="rotate-ccw" class="w-5 h-5"></i>
                     <span>Retake</span>
                 </button>
             </div>
